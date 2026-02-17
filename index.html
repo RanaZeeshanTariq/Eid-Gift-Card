@@ -1233,7 +1233,7 @@ function closeLetter() {
         box3.getCenter(center);
 
         const maxDim = Math.max(size.x, size.y, size.z);
-        const scale  = 1.8 / maxDim;
+        const scale  = 2.6 / maxDim;
         character.scale.setScalar(scale);
         character.position.set(
             -center.x * scale,
