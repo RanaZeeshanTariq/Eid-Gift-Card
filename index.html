@@ -1,0 +1,1300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eid Mubarak 1446 | From Rana Zeeshan</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700;900&family=Lato:wght@400;700&family=Noto+Nastaliq+Urdu&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <style>
+        :root {
+            --deep-green: #022c22;
+            --rich-green: #064e3b;
+            --emerald: #059669;
+            --gold: #d4a017;
+            --gold-light: #f5c842;
+            --gold-glow: #fde68a;
+            --cream: #fffbeb;
+            --white: #ffffff;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: radial-gradient(ellipse at 30% 20%, #053d2d 0%, #022c22 40%, #011a14 100%);
+            min-height: 100vh;
+            overflow: hidden;
+            font-family: 'Lato', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            perspective: 1400px;
+        }
+
+        /* ──── STARS ──── */
+        #stars-canvas {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* ──── CRESCENT MOON ──── */
+        .moon {
+            position: fixed;
+            top: 40px;
+            right: 80px;
+            width: 80px;
+            height: 80px;
+            z-index: 1;
+            animation: moonGlow 3s ease-in-out infinite alternate;
+        }
+        .moon::before {
+            content: '';
+            position: absolute;
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 35% 35%, #fde68a, #d4a017);
+            box-shadow: 0 0 30px 15px rgba(212,160,23,0.35), 0 0 60px 30px rgba(212,160,23,0.15);
+        }
+        .moon::after {
+            content: '';
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            width: 72px;
+            height: 72px;
+            border-radius: 50%;
+            background: #022c22;
+            box-shadow: inset 0 0 15px rgba(0,0,0,0.5);
+        }
+        @keyframes moonGlow {
+            from { filter: brightness(0.9); }
+            to   { filter: brightness(1.1); }
+        }
+
+        /* ──── LANTERNS ──── */
+        .lantern {
+            position: fixed;
+            top: 0;
+            z-index: 2;
+            transform-origin: center top;
+            animation: lanternSway 4s ease-in-out infinite;
+        }
+        .lantern-left  { left: 60px; animation-delay: 0s; }
+        .lantern-right { right: 60px; animation-delay: 1.5s; }
+        @keyframes lanternSway {
+            0%,100% { transform: rotate(-8deg); }
+            50%      { transform: rotate(8deg); }
+        }
+        .lantern svg { filter: drop-shadow(0 0 12px rgba(212,160,23,0.7)); }
+
+        /* ──── FLOATING PARTICLES ──── */
+        .particle {
+            position: fixed;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 1;
+            animation: floatUp linear infinite;
+            opacity: 0;
+        }
+        @keyframes floatUp {
+            0%   { transform: translateY(100vh) translateX(0) scale(0); opacity: 0; }
+            10%  { opacity: 0.8; }
+            90%  { opacity: 0.4; }
+            100% { transform: translateY(-10vh) translateX(var(--drift)) scale(1); opacity: 0; }
+        }
+
+        /* ──── SCENE WRAPPER ──── */
+        #scene {
+            position: relative;
+            z-index: 5;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0;
+        }
+
+        /* ──── TITLE ──── */
+        .eid-title {
+            font-family: 'Cinzel Decorative', serif;
+            font-size: clamp(1.2rem, 3vw, 2rem);
+            font-weight: 900;
+            color: var(--gold-light);
+            text-shadow: 0 0 20px rgba(212,160,23,0.6), 0 2px 4px rgba(0,0,0,0.5);
+            letter-spacing: 0.15em;
+            margin-bottom: 8px;
+            animation: titleShimmer 2s ease-in-out infinite alternate;
+        }
+        .eid-sub {
+            font-family: 'Noto Nastaliq Urdu', serif;
+            font-size: clamp(1rem, 2.5vw, 1.5rem);
+            color: var(--gold-glow);
+            opacity: 0.85;
+            margin-bottom: 30px;
+            direction: rtl;
+        }
+        @keyframes titleShimmer {
+            from { text-shadow: 0 0 15px rgba(212,160,23,0.5), 0 2px 4px rgba(0,0,0,0.5); }
+            to   { text-shadow: 0 0 35px rgba(245,200,66,0.9), 0 0 60px rgba(212,160,23,0.4), 0 2px 4px rgba(0,0,0,0.5); }
+        }
+
+        /* ──── INSTRUCTION ──── */
+        .hint {
+            margin-top: 18px;
+            font-size: 0.9rem;
+            color: rgba(253,230,138,0.7);
+            letter-spacing: 0.08em;
+            animation: pulse 2s ease-in-out infinite;
+        }
+        @keyframes pulse { 0%,100%{opacity:0.6} 50%{opacity:1} }
+
+        /* ──── 3D GIFT BOX ──── */
+        .scene-3d {
+            width: 200px;
+            height: 200px;
+            perspective: 800px;
+            position: relative;
+        }
+
+        .box-wrapper {
+            width: 200px;
+            height: 200px;
+            position: relative;
+            transform-style: preserve-3d;
+            transform: rotateY(-15deg) rotateX(5deg);
+            cursor: pointer;
+            transition: transform 0.4s ease;
+            animation: boxHover 4s ease-in-out infinite;
+        }
+        .box-wrapper:hover {
+            animation: none;
+            transform: rotateY(-5deg) rotateX(2deg) scale(1.06);
+        }
+        .box-wrapper:hover .box-face {
+            box-shadow: 0 0 40px rgba(212,160,23,0.3);
+        }
+        @keyframes boxHover {
+            0%,100% { transform: rotateY(-15deg) rotateX(5deg) translateY(0px); }
+            50%      { transform: rotateY(-15deg) rotateX(5deg) translateY(-8px); }
+        }
+
+        /* Box opened state */
+        .box-wrapper.opened {
+            animation: none;
+            transform: rotateY(-15deg) rotateX(5deg) translateY(0px);
+            pointer-events: none;
+        }
+
+        .box-face {
+            position: absolute;
+            width: 200px;
+            height: 200px;
+            backface-visibility: hidden;
+            border: 1px solid rgba(255,255,255,0.08);
+        }
+
+        .face-front  { 
+            background: linear-gradient(135deg, #065f46 0%, #047857 50%, #065f46 100%);
+            transform: translateZ(100px);
+        }
+        .face-back   { 
+            background: linear-gradient(135deg, #022c22 0%, #064e3b 100%);
+            transform: rotateY(180deg) translateZ(100px); 
+        }
+        .face-left   { 
+            background: linear-gradient(to right, #022c22, #065f46);
+            transform: rotateY(-90deg) translateZ(100px); 
+        }
+        .face-right  { 
+            background: linear-gradient(to right, #065f46, #022c22);
+            transform: rotateY(90deg) translateZ(100px); 
+        }
+        .face-bottom { 
+            background: #011a14;
+            transform: rotateX(-90deg) translateZ(100px); 
+        }
+        .face-top {
+            background: linear-gradient(135deg, #065f46 0%, #059669 50%, #065f46 100%);
+            transform: rotateX(90deg) translateZ(100px);
+            transition: transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 0.5s ease;
+        }
+        .face-top.fly-off {
+            transform: rotateX(90deg) translateZ(100px) translateY(-400px) rotateX(60deg);
+            opacity: 0;
+        }
+
+        /* Ribbons on faces */
+        .ribbon-v {
+            position: absolute;
+            width: 36px;
+            height: 100%;
+            left: 82px;
+            background: linear-gradient(to bottom, var(--gold-light), var(--gold), var(--gold-light));
+            box-shadow: 0 0 10px rgba(212,160,23,0.5), inset 0 0 8px rgba(255,255,255,0.2);
+        }
+        .ribbon-h {
+            position: absolute;
+            height: 36px;
+            width: 100%;
+            top: 82px;
+            background: linear-gradient(to right, var(--gold-light), var(--gold), var(--gold-light));
+            box-shadow: 0 0 10px rgba(212,160,23,0.5), inset 0 0 8px rgba(255,255,255,0.2);
+        }
+
+        /* Bow on top */
+        .bow {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1;
+        }
+        .bow-loop {
+            position: absolute;
+            width: 36px;
+            height: 24px;
+            border-radius: 50% 50% 0 0;
+            background: radial-gradient(ellipse, var(--gold-light) 0%, var(--gold) 100%);
+            box-shadow: 0 0 8px rgba(212,160,23,0.6);
+        }
+        .bow-loop-left  { transform: rotate(-40deg) translateX(-18px); }
+        .bow-loop-right { transform: rotate(40deg) translateX(18px); }
+        .bow-center {
+            position: absolute;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: radial-gradient(circle, var(--gold-light), var(--gold));
+            top: -9px;
+            left: -9px;
+            box-shadow: 0 0 12px rgba(212,160,23,0.8);
+        }
+
+        /* Gift Tag */
+        .gift-tag {
+            position: absolute;
+            background: var(--cream);
+            padding: 7px 13px;
+            right: -60px;
+            top: 30px;
+            border-radius: 4px;
+            box-shadow: 4px 4px 12px rgba(0,0,0,0.4);
+            font-size: 13px;
+            color: #1a1a1a;
+            font-family: 'Cormorant Garamond', serif;
+            font-weight: 600;
+            border-left: 4px solid var(--gold);
+            transform: rotateZ(-15deg) translateZ(110px);
+            transform-style: preserve-3d;
+            line-height: 1.4;
+            white-space: nowrap;
+            z-index: 10;
+        }
+        .gift-tag::before {
+            content: '';
+            position: absolute;
+            left: -16px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 12px;
+            height: 2px;
+            background: var(--gold);
+        }
+        .gift-tag::after {
+            content: '';
+            position: absolute;
+            left: -20px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--gold);
+        }
+
+        /* ──── LETTER OVERLAY ──── */
+        #letter-overlay {
+            position: fixed;
+            inset: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 50;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+        #letter-overlay.visible {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .letter-backdrop {
+            position: absolute;
+            inset: 0;
+            background: rgba(1,26,20,0.75);
+            backdrop-filter: blur(6px);
+        }
+
+        .letter-card {
+            position: relative;
+            width: min(420px, 90vw);
+            background: linear-gradient(160deg, #fffbf0 0%, #fdf8e8 50%, #fff9ef 100%);
+            border-radius: 16px;
+            padding: 40px 36px;
+            box-shadow:
+                0 0 0 1px rgba(212,160,23,0.3),
+                0 0 40px rgba(212,160,23,0.25),
+                0 30px 60px rgba(0,0,0,0.6);
+            text-align: center;
+            transform: scale(0) translateY(40px);
+            transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            overflow: hidden;
+            z-index: 1;
+        }
+        #letter-overlay.visible .letter-card {
+            transform: scale(1) translateY(0);
+        }
+
+        /* Letter decorative border */
+        .letter-card::before {
+            content: '';
+            position: absolute;
+            inset: 8px;
+            border: 1px solid rgba(212,160,23,0.35);
+            border-radius: 10px;
+            pointer-events: none;
+        }
+        .letter-card::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background:
+                radial-gradient(ellipse at 0% 0%, rgba(212,160,23,0.08) 0%, transparent 50%),
+                radial-gradient(ellipse at 100% 100%, rgba(212,160,23,0.06) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .letter-ornament {
+            font-size: 2rem;
+            line-height: 1;
+            margin-bottom: 6px;
+            animation: spinIn 0.8s ease-out 0.5s both;
+        }
+        @keyframes spinIn {
+            from { transform: rotate(-180deg) scale(0); opacity: 0; }
+            to   { transform: rotate(0deg) scale(1); opacity: 1; }
+        }
+
+        .letter-to {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: #888;
+            margin-bottom: 4px;
+            font-family: 'Lato', sans-serif;
+        }
+        .letter-name {
+            font-family: 'Cinzel Decorative', serif;
+            font-size: clamp(1.1rem, 3vw, 1.5rem);
+            color: var(--rich-green);
+            margin-bottom: 18px;
+        }
+
+        .letter-divider {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin: 16px 0;
+        }
+        .letter-divider::before, .letter-divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(to right, transparent, rgba(212,160,23,0.5), transparent);
+        }
+        .letter-divider span { color: var(--gold); font-size: 1.1rem; }
+
+        .letter-arabic {
+            font-family: 'Noto Nastaliq Urdu', serif;
+            font-size: 1.6rem;
+            color: var(--rich-green);
+            direction: rtl;
+            margin: 10px 0;
+            line-height: 1.8;
+        }
+        .letter-body {
+            font-family: 'Lato', sans-serif;
+            font-size: 1rem;
+            line-height: 1.9;
+            color: #333;
+            font-style: normal;
+            font-weight: 400;
+            margin: 16px 0;
+        }
+        .letter-sign-off {
+            margin-top: 22px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(212,160,23,0.35);
+            text-align: left;
+        }
+        .letter-blessing {
+            font-family: 'Lato', sans-serif;
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--rich-green);
+            margin-bottom: 8px;
+        }
+        .letter-from {
+            font-family: 'Lato', sans-serif;
+            font-size: 0.95rem;
+            color: #555;
+            font-weight: 400;
+            line-height: 1.6;
+        }
+        .letter-from strong {
+            font-weight: 700;
+            color: #222;
+        }
+        /* close-btn removed */
+
+        /* Confetti inside letter */
+        .confetti-piece {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            border-radius: 2px;
+            pointer-events: none;
+            animation: confettiFall 2s ease-out forwards;
+        }
+        @keyframes confettiFall {
+            0%   { transform: translateY(-20px) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(100%) rotate(720deg); opacity: 0; }
+        }
+
+        /* ──── 3D CHARACTER CANVAS ──── */
+        #char-canvas {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            pointer-events: none;
+            z-index: 15;
+        }
+
+        /* ──── FROM BOARD ──── */
+        .from-board {
+            position: fixed;
+            bottom: 110px;
+            left: 28px;
+            z-index: 16;
+            transform: rotate(-4deg);
+        }
+        .board-post {
+            width: 6px;
+            height: 48px;
+            background: linear-gradient(to bottom, #5d3a1a, #3e2010);
+            margin: 0 auto;
+            border-radius: 0 0 3px 3px;
+        }
+        .board-sign {
+            background: linear-gradient(135deg, #6d4c41, #5d3a1a);
+            color: white;
+            padding: 10px 18px;
+            border: 3px solid #3e2010;
+            font-family: 'Cormorant Garamond', serif;
+            font-weight: 700;
+            font-size: 0.9rem;
+            line-height: 1.4;
+            box-shadow: 4px 4px 0 rgba(0,0,0,0.35), inset 0 0 10px rgba(0,0,0,0.2);
+            border-radius: 4px;
+            text-align: center;
+            letter-spacing: 0.04em;
+        }
+        .board-sign .board-label {
+            display: block;
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            opacity: 0.7;
+            margin-bottom: 3px;
+        }
+        .board-sign .board-name {
+            color: var(--gold-light);
+            font-size: 1rem;
+        }
+
+        /* ──── GLOW PARTICLES from box ──── */
+        .burst-particle {
+            position: fixed;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 40;
+            animation: burst 1.2s ease-out forwards;
+        }
+        @keyframes burst {
+            0%   { transform: translate(0,0) scale(1); opacity: 1; }
+            100% { transform: translate(var(--bx), var(--by)) scale(0); opacity: 0; }
+        }
+
+        /* ──── RESPONSIVE ──── */
+
+        /* Tablet */
+        @media (max-width: 768px) {
+            .moon { top: 16px; right: 16px; width: 55px; height: 55px; }
+            .moon::before { width: 55px; height: 55px; }
+            .moon::after { top: -6px; right: -6px; width: 50px; height: 50px; }
+            .lantern-left  { left: 20px; }
+            .lantern-right { right: 20px; }
+            .lantern svg { width: 28px; height: 70px; }
+            .eid-title { font-size: 1.2rem; margin-bottom: 4px; }
+            .eid-sub   { font-size: 1rem; margin-bottom: 18px; }
+            .hint { font-size: 0.8rem; margin-top: 14px; }
+        }
+
+        /* Mobile — scale the box and character proportionally */
+        @media (max-width: 500px) {
+            body { perspective: 900px; }
+
+            .lantern { display: none; }
+            .moon { top: 12px; right: 12px; width: 46px; height: 46px; }
+            .moon::before { width: 46px; height: 46px; }
+            .moon::after { top: -5px; right: -5px; width: 42px; height: 42px; }
+
+            .eid-title { font-size: 1rem; letter-spacing: 0.08em; }
+            .eid-sub   { font-size: 0.85rem; margin-bottom: 14px; }
+            .hint { font-size: 0.75rem; margin-top: 10px; }
+
+            /* Scale gift box down */
+            .scene-3d {
+                width: 140px;
+                height: 140px;
+                perspective: 560px;
+            }
+            .box-wrapper {
+                width: 140px;
+                height: 140px;
+            }
+            .box-face { width: 140px; height: 140px; }
+            .face-front  { transform: translateZ(70px); }
+            .face-back   { transform: rotateY(180deg) translateZ(70px); }
+            .face-left   { transform: rotateY(-90deg) translateZ(70px); }
+            .face-right  { transform: rotateY(90deg) translateZ(70px); }
+            .face-bottom { transform: rotateX(-90deg) translateZ(70px); }
+            .face-top    { transform: rotateX(90deg) translateZ(70px); }
+            .face-top.fly-off {
+                transform: rotateX(90deg) translateZ(70px) translateY(-300px) rotateX(60deg);
+            }
+            .ribbon-v { width: 24px; left: 58px; }
+            .ribbon-h { height: 24px; top: 58px; }
+            .bow-loop { width: 24px; height: 16px; }
+            .bow-center { width: 12px; height: 12px; top: -6px; left: -6px; }
+
+            @keyframes boxHover {
+                0%,100% { transform: rotateY(-15deg) rotateX(5deg) translateY(0px); }
+                50%      { transform: rotateY(-15deg) rotateX(5deg) translateY(-5px); }
+            }
+
+            /* Gift tag */
+            .gift-tag {
+                right: -44px;
+                top: 18px;
+                font-size: 10px;
+                padding: 5px 9px;
+                transform: rotateZ(-15deg) translateZ(76px);
+            }
+
+            /* Character canvas — smaller */
+            #char-canvas {
+                width: 120px !important;
+                height: 200px !important;
+            }
+
+            /* Board position */
+            .from-board {
+                bottom: 72px;
+                left: 6px;
+                transform: rotate(-3deg);
+            }
+            .board-sign {
+                padding: 7px 10px;
+                font-size: 0.72rem;
+            }
+            .board-sign .board-name { font-size: 0.8rem; }
+            .board-post { height: 30px; }
+
+            /* Letter card — full-width friendly */
+            .letter-card {
+                width: min(340px, 94vw);
+                padding: 28px 20px;
+            }
+            .letter-ornament { font-size: 1.6rem; }
+            .letter-name { font-size: 1rem; }
+            .letter-arabic { font-size: 1.2rem; }
+            .letter-body { font-size: 0.88rem; line-height: 1.75; }
+            .letter-blessing { font-size: 0.9rem; }
+            .letter-from { font-size: 0.82rem; }
+        }
+
+        /* Very small phones */
+        @media (max-width: 360px) {
+            .scene-3d { width: 120px; height: 120px; perspective: 480px; }
+            .box-wrapper { width: 120px; height: 120px; }
+            .box-face { width: 120px; height: 120px; }
+            .face-front  { transform: translateZ(60px); }
+            .face-back   { transform: rotateY(180deg) translateZ(60px); }
+            .face-left   { transform: rotateY(-90deg) translateZ(60px); }
+            .face-right  { transform: rotateY(90deg) translateZ(60px); }
+            .face-bottom { transform: rotateX(-90deg) translateZ(60px); }
+            .face-top    { transform: rotateX(90deg) translateZ(60px); }
+            .face-top.fly-off {
+                transform: rotateX(90deg) translateZ(60px) translateY(-260px) rotateX(60deg);
+            }
+            .ribbon-v { width: 20px; left: 50px; }
+            .ribbon-h { height: 20px; top: 50px; }
+            .gift-tag {
+                right: -38px;
+                font-size: 9px;
+                transform: rotateZ(-15deg) translateZ(66px);
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Stars background -->
+<canvas id="stars-canvas"></canvas>
+
+<!-- Crescent Moon -->
+<div class="moon"></div>
+
+<!-- Decorative Lanterns -->
+<div class="lantern lantern-left">
+    <svg width="40" height="100" viewBox="0 0 40 100">
+        <line x1="20" y1="0" x2="20" y2="15" stroke="#d4a017" stroke-width="2"/>
+        <ellipse cx="20" cy="20" rx="12" ry="5" fill="#d4a017"/>
+        <rect x="8" y="20" width="24" height="55" rx="6" fill="rgba(212,160,23,0.15)" stroke="#d4a017" stroke-width="1.5"/>
+        <rect x="10" y="24" width="20" height="47" rx="4" fill="rgba(255,200,50,0.12)"/>
+        <line x1="8" y1="35" x2="32" y2="35" stroke="#d4a017" stroke-width="1" opacity="0.5"/>
+        <line x1="8" y1="50" x2="32" y2="50" stroke="#d4a017" stroke-width="1" opacity="0.5"/>
+        <line x1="8" y1="65" x2="32" y2="65" stroke="#d4a017" stroke-width="1" opacity="0.5"/>
+        <ellipse cx="20" cy="75" rx="12" ry="5" fill="#d4a017"/>
+        <line x1="15" y1="80" x2="15" y2="90" stroke="#d4a017" stroke-width="1.5"/>
+        <line x1="20" y1="80" x2="20" y2="95" stroke="#d4a017" stroke-width="1.5"/>
+        <line x1="25" y1="80" x2="25" y2="90" stroke="#d4a017" stroke-width="1.5"/>
+        <circle cx="20" cy="47" r="6" fill="rgba(255,200,50,0.5)"/>
+        <circle cx="20" cy="47" r="3" fill="rgba(255,230,100,0.8)"/>
+    </svg>
+</div>
+<div class="lantern lantern-right">
+    <svg width="40" height="100" viewBox="0 0 40 100">
+        <line x1="20" y1="0" x2="20" y2="15" stroke="#d4a017" stroke-width="2"/>
+        <ellipse cx="20" cy="20" rx="12" ry="5" fill="#d4a017"/>
+        <rect x="8" y="20" width="24" height="55" rx="6" fill="rgba(212,160,23,0.15)" stroke="#d4a017" stroke-width="1.5"/>
+        <rect x="10" y="24" width="20" height="47" rx="4" fill="rgba(255,200,50,0.12)"/>
+        <line x1="8" y1="35" x2="32" y2="35" stroke="#d4a017" stroke-width="1" opacity="0.5"/>
+        <line x1="8" y1="50" x2="32" y2="50" stroke="#d4a017" stroke-width="1" opacity="0.5"/>
+        <line x1="8" y1="65" x2="32" y2="65" stroke="#d4a017" stroke-width="1" opacity="0.5"/>
+        <ellipse cx="20" cy="75" rx="12" ry="5" fill="#d4a017"/>
+        <line x1="15" y1="80" x2="15" y2="90" stroke="#d4a017" stroke-width="1.5"/>
+        <line x1="20" y1="80" x2="20" y2="95" stroke="#d4a017" stroke-width="1.5"/>
+        <line x1="25" y1="80" x2="25" y2="90" stroke="#d4a017" stroke-width="1.5"/>
+        <circle cx="20" cy="47" r="6" fill="rgba(255,200,50,0.5)"/>
+        <circle cx="20" cy="47" r="3" fill="rgba(255,230,100,0.8)"/>
+    </svg>
+</div>
+
+<!-- 3D Character Canvas -->
+<canvas id="char-canvas"></canvas>
+
+<!-- FROM Board -->
+<div class="from-board">
+    <div class="board-sign">
+        <span class="board-label">From</span>
+        <span class="board-name">Rana Zeeshan Tariq</span>
+    </div>
+    <div class="board-post"></div>
+</div>
+
+<!-- Main Scene -->
+<div id="scene">
+    <div class="eid-title">✦ Eid Mubarak ✦</div>
+    <div class="eid-sub">عید مبارک ۱۴۴۶</div>
+
+    <div class="scene-3d">
+        <div class="box-wrapper" id="giftBox" onclick="openGift()">
+
+            <!-- Gift Tag -->
+            <div class="gift-tag">
+                For: <span id="recipientName">Friend</span>
+            </div>
+
+            <!-- Front face -->
+            <div class="box-face face-front">
+                <div class="ribbon-v"></div>
+                <div class="ribbon-h"></div>
+            </div>
+            <!-- Back face -->
+            <div class="box-face face-back">
+                <div class="ribbon-v"></div>
+            </div>
+            <!-- Left face -->
+            <div class="box-face face-left"></div>
+            <!-- Right face -->
+            <div class="box-face face-right"></div>
+            <!-- Bottom face -->
+            <div class="box-face face-bottom"></div>
+            <!-- Top face with bow -->
+            <div class="box-face face-top" id="boxTop">
+                <div class="ribbon-v"></div>
+                <div class="ribbon-h"></div>
+                <!-- Bow -->
+                <div class="bow">
+                    <div class="bow-loop bow-loop-left"></div>
+                    <div class="bow-loop bow-loop-right"></div>
+                    <div class="bow-center"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <p class="hint">🎁 Click the gift to open it</p>
+</div>
+
+<!-- Letter Overlay -->
+<div id="letter-overlay">
+    <div class="letter-backdrop" onclick="closeLetter()"></div>
+    <div class="letter-card" id="letterCard">
+        <div class="letter-ornament">🌙</div>
+        <div class="letter-to">A Special Message for</div>
+        <div class="letter-name" id="letterName">Friend</div>
+
+        <div class="letter-divider"><span>✦</span></div>
+
+        <div class="letter-arabic">عيد مبارك وكل عام وأنتم بخير</div>
+
+        <div class="letter-body" id="letterBody">
+            May the blessings of Allah fill your life with happiness and open all the doors of success for you now and always. 
+            Wishing you peace, love, and joy on this beautiful Eid.
+        </div>
+
+        <div class="letter-divider"><span>❀</span></div>
+
+        <div class="letter-sign-off">
+            <div class="letter-blessing">Stay Blessed Always</div>
+            <div class="letter-from">With love &amp; duas, <strong>Rana Zeeshan Tariq</strong></div>
+        </div>
+    </div>
+</div>
+
+<script>
+// ──────────────────────────────────────────────────────────────────
+// URL Params
+// ──────────────────────────────────────────────────────────────────
+const params = new URLSearchParams(window.location.search);
+const recipientName = params.get('name') || 'Dear Friend';
+document.getElementById('recipientName').textContent = recipientName;
+document.getElementById('letterName').textContent = recipientName;
+
+const customMsg = params.get('msg');
+if (customMsg) document.getElementById('letterBody').textContent = decodeURIComponent(customMsg);
+
+// ──────────────────────────────────────────────────────────────────
+// Stars Canvas
+// ──────────────────────────────────────────────────────────────────
+(function initStars() {
+    const canvas = document.getElementById('stars-canvas');
+    const ctx = canvas.getContext('2d');
+    let W, H, stars = [];
+
+    function resize() {
+        W = canvas.width  = window.innerWidth;
+        H = canvas.height = window.innerHeight;
+    }
+
+    function makeStars(n) {
+        stars = [];
+        for (let i = 0; i < n; i++) {
+            stars.push({
+                x: Math.random() * W,
+                y: Math.random() * H * 0.7,
+                r: Math.random() * 1.8 + 0.3,
+                a: Math.random(),
+                speed: Math.random() * 0.008 + 0.003,
+                phase: Math.random() * Math.PI * 2
+            });
+        }
+    }
+
+    let t = 0;
+    function draw() {
+        ctx.clearRect(0, 0, W, H);
+        t += 0.016;
+        stars.forEach(s => {
+            const alpha = 0.3 + 0.7 * (0.5 + 0.5 * Math.sin(t * s.speed * 60 + s.phase));
+            ctx.beginPath();
+            ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+            ctx.fillStyle = `rgba(253,230,138,${alpha})`;
+            ctx.fill();
+        });
+        requestAnimationFrame(draw);
+    }
+
+    resize();
+    makeStars(180);
+    draw();
+    window.addEventListener('resize', () => { resize(); makeStars(180); });
+})();
+
+// ──────────────────────────────────────────────────────────────────
+// Floating Particles
+// ──────────────────────────────────────────────────────────────────
+(function spawnParticles() {
+    const colors = ['#d4a017','#f5c842','#fde68a','#059669','#10b981'];
+    for (let i = 0; i < 18; i++) {
+        const el = document.createElement('div');
+        el.className = 'particle';
+        const size = Math.random() * 5 + 3;
+        el.style.cssText = `
+            width:${size}px; height:${size}px;
+            background:${colors[Math.floor(Math.random()*colors.length)]};
+            left:${Math.random()*100}%;
+            bottom:-${size}px;
+            --drift:${(Math.random()-0.5)*120}px;
+            animation-duration:${Math.random()*8+6}s;
+            animation-delay:${Math.random()*8}s;
+        `;
+        document.body.appendChild(el);
+    }
+})();
+
+// ──────────────────────────────────────────────────────────────────
+// Gift Box Open
+// ──────────────────────────────────────────────────────────────────
+let opened = false;
+function openGift() {
+    if (opened) return;
+    opened = true;
+
+    // Animate lid off
+    document.getElementById('boxTop').classList.add('fly-off');
+
+    // Burst particles from center
+    const box = document.getElementById('giftBox');
+    const rect = box.getBoundingClientRect();
+    const cx = rect.left + rect.width / 2;
+    const cy = rect.top + rect.height / 2;
+    spawnBurst(cx, cy);
+
+    // Show letter after short delay
+    setTimeout(() => {
+        document.getElementById('letter-overlay').classList.add('visible');
+        spawnConfetti();
+    }, 700);
+}
+
+function spawnBurst(cx, cy) {
+    const colors = ['#f5c842','#fde68a','#d4a017','#34d399','#ffffff'];
+    for (let i = 0; i < 24; i++) {
+        const el = document.createElement('div');
+        el.className = 'burst-particle';
+        const angle = (i / 24) * Math.PI * 2;
+        const dist = 80 + Math.random() * 120;
+        el.style.cssText = `
+            left:${cx}px; top:${cy}px;
+            background:${colors[i % colors.length]};
+            --bx:${Math.cos(angle)*dist}px;
+            --by:${Math.sin(angle)*dist}px;
+            animation-duration:${0.8 + Math.random()*0.6}s;
+        `;
+        document.body.appendChild(el);
+        setTimeout(() => el.remove(), 1500);
+    }
+}
+
+function spawnConfetti() {
+    const card = document.getElementById('letterCard');
+    const colors = ['#d4a017','#f5c842','#34d399','#059669','#fde68a','#ffffff'];
+    for (let i = 0; i < 20; i++) {
+        const el = document.createElement('div');
+        el.className = 'confetti-piece';
+        el.style.cssText = `
+            background:${colors[i%colors.length]};
+            left:${Math.random()*100}%;
+            top:0;
+            animation-delay:${Math.random()*0.5}s;
+            animation-duration:${1.5+Math.random()}s;
+        `;
+        card.appendChild(el);
+        setTimeout(() => el.remove(), 2500);
+    }
+}
+
+function closeLetter() {
+    // Hide letter overlay
+    document.getElementById('letter-overlay').classList.remove('visible');
+
+    // After overlay fades out, reset the box so it can be opened again
+    setTimeout(() => {
+        const top = document.getElementById('boxTop');
+        const box = document.getElementById('giftBox');
+
+        // Temporarily disable transition so reset is instant, then re-enable
+        top.style.transition = 'none';
+        top.classList.remove('fly-off');
+        box.classList.remove('opened');
+
+        // Force reflow so the transition-none takes effect before we restore it
+        void top.offsetHeight;
+        top.style.transition = '';
+
+        // Re-enable clicking and hover animation
+        box.style.pointerEvents = '';
+        opened = false;
+    }, 450); // wait for overlay fade (0.4s) to finish first
+}
+
+// ──────────────────────────────────────────────────────────────────
+// Three.js — Roblox Character
+// ──────────────────────────────────────────────────────────────────
+(function init3DCharacter() {
+    const canvas = document.getElementById('char-canvas');
+    const isMobile = window.innerWidth <= 500;
+    const W = isMobile ? Math.min(120, window.innerWidth * 0.32) : Math.min(320, window.innerWidth * 0.35);
+    const H = isMobile ? Math.min(200, window.innerHeight * 0.38) : Math.min(400, window.innerHeight * 0.55);
+    canvas.width  = W;
+    canvas.height = H;
+    canvas.style.width  = W + 'px';
+    canvas.style.height = H + 'px';
+
+    const scene    = new THREE.Scene();
+    const camera   = new THREE.PerspectiveCamera(40, W / H, 0.1, 100);
+    camera.position.set(0, 0, 3.5);
+
+    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+    renderer.setPixelRatio(window.devicePixelRatio);
+    renderer.setSize(W, H);
+    renderer.setClearColor(0x000000, 0);
+    renderer.shadowMap.enabled = true;
+
+    // Lights
+    const ambient = new THREE.AmbientLight(0xffffff, 0.7);
+    scene.add(ambient);
+
+    const keyLight = new THREE.DirectionalLight(0xfde68a, 1.2);
+    keyLight.position.set(3, 5, 3);
+    keyLight.castShadow = true;
+    scene.add(keyLight);
+
+    const fillLight = new THREE.DirectionalLight(0x34d399, 0.4);
+    fillLight.position.set(-3, 2, 1);
+    scene.add(fillLight);
+
+    const rimLight = new THREE.PointLight(0xd4a017, 0.8, 10);
+    rimLight.position.set(0, 3, -2);
+    scene.add(rimLight);
+
+    let character = null;
+    let mixer     = null;
+    let loadFailed = false;
+
+    // Attempt to load the GLTF
+    // We create an inline loader since we can't import modules
+    function loadGLTF(url, onLoad, onError) {
+        // Use THREE.FileLoader + JSON parse since GLTFLoader may not be available
+        // Instead build a simple GLB-style loader using fetch
+        fetch(url)
+            .then(r => r.arrayBuffer())
+            .then(buffer => {
+                // Check if it's binary GLB (magic: 0x46546C67)
+                const view = new DataView(buffer);
+                const magic = view.getUint32(0, true);
+                if (magic === 0x46546C67) {
+                    // Binary GLTF — parse manually
+                    parseBinaryGLTF(buffer, onLoad, onError);
+                } else {
+                    // Text JSON GLTF
+                    const text = new TextDecoder().decode(buffer);
+                    const json = JSON.parse(text);
+                    parseGLTFJson(json, url, onLoad, onError);
+                }
+            })
+            .catch(onError);
+    }
+
+    function parseBinaryGLTF(buffer, onLoad, onError) {
+        try {
+            const view = new DataView(buffer);
+            // Header
+            const version    = view.getUint32(4, true);
+            const totalLen   = view.getUint32(8, true);
+            let offset = 12;
+            let jsonChunk = null, binChunk = null;
+            while (offset < totalLen) {
+                const chunkLen  = view.getUint32(offset, true);
+                const chunkType = view.getUint32(offset + 4, true);
+                offset += 8;
+                if (chunkType === 0x4E4F534A) { // JSON
+                    jsonChunk = new TextDecoder().decode(new Uint8Array(buffer, offset, chunkLen));
+                } else if (chunkType === 0x004E4942) { // BIN
+                    binChunk = buffer.slice(offset, offset + chunkLen);
+                }
+                offset += chunkLen;
+            }
+            if (!jsonChunk) { onError(new Error('No JSON chunk')); return; }
+            const gltf = JSON.parse(jsonChunk);
+            buildScene(gltf, binChunk, onLoad, onError);
+        } catch(e) { onError(e); }
+    }
+
+    function buildScene(gltf, binBuffer, onLoad, onError) {
+        try {
+            const buffers = [binBuffer];
+            const group   = new THREE.Group();
+
+            // Load images
+            const imagePromises = (gltf.images || []).map((img, i) => {
+                return new Promise((res) => {
+                    if (img.bufferView !== undefined) {
+                        const bv  = gltf.bufferViews[img.bufferView];
+                        const arr = new Uint8Array(buffers[bv.buffer], bv.byteOffset || 0, bv.byteLength);
+                        const blob = new Blob([arr], { type: img.mimeType || 'image/jpeg' });
+                        const url  = URL.createObjectURL(blob);
+                        const tex  = new THREE.TextureLoader().load(url, () => { URL.revokeObjectURL(url); res(tex); }, undefined, () => res(null));
+                        tex.flipY  = false;
+                    } else { res(null); }
+                });
+            });
+
+            Promise.all(imagePromises).then(textures => {
+                // Materials
+                const materials = (gltf.materials || []).map(mat => {
+                    const m = new THREE.MeshStandardMaterial({ side: mat.doubleSided ? THREE.DoubleSide : THREE.FrontSide });
+                    const pbr = mat.pbrMetallicRoughness || {};
+                    if (pbr.baseColorTexture !== undefined && textures[pbr.baseColorTexture.index]) {
+                        m.map = textures[pbr.baseColorTexture.index];
+                    }
+                    m.roughness = pbr.roughnessFactor !== undefined ? pbr.roughnessFactor : 1;
+                    m.metalness = pbr.metallicFactor  !== undefined ? pbr.metallicFactor  : 0;
+                    if (mat.normalTexture !== undefined && textures[mat.normalTexture.index]) {
+                        m.normalMap = textures[mat.normalTexture.index];
+                    }
+                    return m;
+                });
+
+                // Accessor helper
+                function getAccessor(idx) {
+                    const acc = gltf.accessors[idx];
+                    const bv  = gltf.bufferViews[acc.bufferView];
+                    const buf = buffers[bv.buffer];
+                    const byteOffset = (bv.byteOffset || 0) + (acc.byteOffset || 0);
+                    const typeMap = { SCALAR:1, VEC2:2, VEC3:3, VEC4:4, MAT4:16 };
+                    const components = typeMap[acc.type] || 1;
+                    const ctorMap = {
+                        5126: Float32Array,
+                        5125: Uint32Array,
+                        5123: Uint16Array,
+                        5121: Uint8Array
+                    };
+                    const Ctor = ctorMap[acc.componentType] || Float32Array;
+                    return new Ctor(buf, byteOffset, acc.count * components);
+                }
+
+                // Meshes
+                (gltf.meshes || []).forEach(meshDef => {
+                    meshDef.primitives.forEach(prim => {
+                        const geo = new THREE.BufferGeometry();
+                        // Positions
+                        if (prim.attributes.POSITION !== undefined) {
+                            geo.setAttribute('position', new THREE.BufferAttribute(getAccessor(prim.attributes.POSITION), 3));
+                        }
+                        if (prim.attributes.NORMAL !== undefined) {
+                            geo.setAttribute('normal', new THREE.BufferAttribute(getAccessor(prim.attributes.NORMAL), 3));
+                        }
+                        if (prim.attributes.TEXCOORD_0 !== undefined) {
+                            geo.setAttribute('uv', new THREE.BufferAttribute(getAccessor(prim.attributes.TEXCOORD_0), 2));
+                        }
+                        if (prim.indices !== undefined) {
+                            geo.setIndex(new THREE.BufferAttribute(getAccessor(prim.indices), 1));
+                        }
+                        geo.computeVertexNormals();
+                        const mat  = prim.material !== undefined ? materials[prim.material] : new THREE.MeshStandardMaterial();
+                        const mesh = new THREE.Mesh(geo, mat);
+                        mesh.castShadow    = true;
+                        mesh.receiveShadow = true;
+                        group.add(mesh);
+                    });
+                });
+
+                onLoad(group);
+            });
+        } catch(e) { onError(e); }
+    }
+
+    function parseGLTFJson(gltf, baseUrl, onLoad, onError) {
+        // If external buffer referenced, load it
+        const bufferPromises = (gltf.buffers || []).map(buf => {
+            if (buf.uri) {
+                const url = new URL(buf.uri, baseUrl).href;
+                return fetch(url).then(r => r.arrayBuffer());
+            }
+            return Promise.resolve(null);
+        });
+        Promise.all(bufferPromises).then(buffers => {
+            buildScene(gltf, buffers[0], onLoad, onError);
+        }).catch(onError);
+    }
+
+    // Build fallback Roblox-style blocky character
+    function buildFallbackCharacter() {
+        const group = new THREE.Group();
+        const green = new THREE.MeshStandardMaterial({ color: 0x064e3b });
+        const skin  = new THREE.MeshStandardMaterial({ color: 0xfbbf24 });
+        const gold  = new THREE.MeshStandardMaterial({ color: 0xd4a017 });
+        const dark  = new THREE.MeshStandardMaterial({ color: 0x022c22 });
+        const white = new THREE.MeshStandardMaterial({ color: 0xffffff });
+
+        // Torso
+        const torso = new THREE.Mesh(new THREE.BoxGeometry(0.6,0.7,0.4), green);
+        torso.position.y = 0.1;
+        group.add(torso);
+
+        // Head
+        const head = new THREE.Mesh(new THREE.BoxGeometry(0.5,0.5,0.45), skin);
+        head.position.y = 0.75;
+        group.add(head);
+
+        // Eyes
+        [-0.1, 0.1].forEach(x => {
+            const eye = new THREE.Mesh(new THREE.BoxGeometry(0.08,0.06,0.05), dark);
+            eye.position.set(x, 0.8, 0.24);
+            group.add(eye);
+        });
+
+        // Smile
+        const smile = new THREE.Mesh(new THREE.BoxGeometry(0.2,0.04,0.05), dark);
+        smile.position.set(0, 0.68, 0.24);
+        group.add(smile);
+
+        // Kufi (Islamic cap)
+        const kufi = new THREE.Mesh(new THREE.CylinderGeometry(0.27,0.27,0.18,8), gold);
+        kufi.position.y = 1.07;
+        group.add(kufi);
+
+        // Left Arm
+        const lArm = new THREE.Mesh(new THREE.BoxGeometry(0.22,0.6,0.3), green);
+        lArm.position.set(-0.41, 0.1, 0);
+        lArm.rotation.z = -0.15;
+        group.add(lArm);
+
+        // Right Arm (raised for waving)
+        const rArm = new THREE.Mesh(new THREE.BoxGeometry(0.22,0.6,0.3), green);
+        rArm.position.set(0.41, 0.25, 0);
+        rArm.rotation.z = 0.8;
+        group.add(rArm);
+
+        // Hands
+        const lHand = new THREE.Mesh(new THREE.BoxGeometry(0.2,0.2,0.25), skin);
+        lHand.position.set(-0.48, -0.2, 0);
+        group.add(lHand);
+        const rHand = new THREE.Mesh(new THREE.BoxGeometry(0.2,0.2,0.25), skin);
+        rHand.position.set(0.55, 0.55, 0);
+        group.add(rHand);
+
+        // Legs
+        [-0.15, 0.15].forEach((x,i) => {
+            const leg = new THREE.Mesh(new THREE.BoxGeometry(0.25,0.55,0.3), dark);
+            leg.position.set(x, -0.46, 0);
+            group.add(leg);
+        });
+
+        // Shoes
+        [-0.15, 0.15].forEach(x => {
+            const shoe = new THREE.Mesh(new THREE.BoxGeometry(0.28,0.15,0.38), dark);
+            shoe.position.set(x, -0.79, 0.04);
+            group.add(shoe);
+        });
+
+        return group;
+    }
+
+    function onCharacterLoaded(group) {
+        character = group;
+
+        // Auto-fit: get bounding box and scale/center
+        const box3 = new THREE.Box3().setFromObject(character);
+        const size = new THREE.Vector3();
+        box3.getSize(size);
+        const center = new THREE.Vector3();
+        box3.getCenter(center);
+
+        const maxDim = Math.max(size.x, size.y, size.z);
+        const scale  = 1.8 / maxDim;
+        character.scale.setScalar(scale);
+        character.position.set(
+            -center.x * scale,
+            -center.y * scale - 0.1,
+            -center.z * scale
+        );
+
+        // Face forward toward viewer, slight turn left
+        character.rotation.y = Math.PI + 0.3;
+
+        scene.add(character);
+        animate();
+    }
+
+    function onLoadError(err) {
+        console.warn('GLTF load failed, using fallback:', err);
+        loadFailed = true;
+        character = buildFallbackCharacter();
+        character.position.y = -1.0;
+        character.rotation.y = Math.PI + 0.3;
+        scene.add(character);
+        animate();
+    }
+
+    // Try loading the GLTF
+    loadGLTF('character.gltf', onCharacterLoaded, onLoadError);
+
+    // ── Animate ──
+    let clock = { start: Date.now() };
+    function animate() {
+        requestAnimationFrame(animate);
+
+        const t = (Date.now() - clock.start) * 0.001;
+
+        if (character) {
+            // Gentle breathing bob
+            character.position.y += Math.sin(t * 1.8) * 0.0008;
+            // Subtle look-around (centered on forward-facing angle)
+            character.rotation.y = (Math.PI + 0.3) + Math.sin(t * 0.5) * 0.12;
+        }
+
+        rimLight.intensity = 0.6 + 0.2 * Math.sin(t * 1.2);
+
+        renderer.render(scene, camera);
+    }
+
+    // Handle resize
+    window.addEventListener('resize', () => {
+        const mob = window.innerWidth <= 500;
+        const nW = mob ? Math.min(120, window.innerWidth * 0.32) : Math.min(320, window.innerWidth * 0.35);
+        const nH = mob ? Math.min(200, window.innerHeight * 0.38) : Math.min(400, window.innerHeight * 0.55);
+        canvas.width  = nW;
+        canvas.height = nH;
+        canvas.style.width  = nW + 'px';
+        canvas.style.height = nH + 'px';
+        camera.aspect = nW / nH;
+        camera.updateProjectionMatrix();
+        renderer.setSize(nW, nH);
+    });
+
+})();
+</script>
+</body>
+</html>
