@@ -251,7 +251,13 @@
             left: 50%;
             transform: translate(-50%, -50%);
             z-index: 1;
+            transition: all 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
         }
+        .bow.pulled {
+            transform: translate(-50%, -50%) translateY(-200px) translateX(-100px) rotate(360deg) scale(0.3);
+            opacity: 0;
+        }
+        
         .bow-loop {
             position: absolute;
             width: 36px;
@@ -482,6 +488,26 @@
             left: 0;
             pointer-events: none;
             z-index: 15;
+            transition: transform 1s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Character walks to center */
+        #char-canvas.walking {
+            transform: translateX(calc(50vw - 160px)) translateY(-20px) scale(1.15);
+        }
+
+        /* Character reaches up for ribbon */
+        #char-canvas.reaching {
+            transform: translateX(calc(50vw - 160px)) translateY(-40px) scale(1.15);
+        }
+
+        @media (max-width: 500px) {
+            #char-canvas.walking {
+                transform: translateX(calc(50vw - 60px)) translateY(-15px) scale(1.2);
+            }
+            #char-canvas.reaching {
+                transform: translateX(calc(50vw - 60px)) translateY(-30px) scale(1.2);
+            }
         }
 
         /* ──── FROM BOARD ──── */
@@ -541,6 +567,23 @@
             100% { transform: translate(var(--bx), var(--by)) scale(0); opacity: 0; }
         }
 
+        /* Sparkles when ribbon is pulled */
+        .ribbon-sparkle {
+            position: fixed;
+            width: 8px;
+            height: 8px;
+            background: var(--gold-light);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 41;
+            box-shadow: 0 0 10px var(--gold-light);
+            animation: sparkle 0.8s ease-out forwards;
+        }
+        @keyframes sparkle {
+            0%   { transform: translate(0,0) scale(1) rotate(0deg); opacity: 1; }
+            100% { transform: translate(var(--sx), var(--sy)) scale(0) rotate(360deg); opacity: 0; }
+        }
+
         /* ──── RESPONSIVE ──── */
 
         /* Tablet */
@@ -560,7 +603,7 @@
         @media (max-width: 500px) {
             body { perspective: 900px; }
 
-            /* .lantern { display: none; } */
+            .lantern { display: none; }
             .moon { top: 12px; right: 12px; width: 46px; height: 46px; }
             .moon::before { width: 46px; height: 46px; }
             .moon::after { top: -5px; right: -5px; width: 42px; height: 42px; }
@@ -723,7 +766,7 @@
 <!-- Main Scene -->
 <div id="scene">
     <div class="eid-title">✦ Eid Mubarak ✦</div>
-    <div class="eid-sub">عید مبارک ۱۴۴۷ </div>
+    <div class="eid-sub">عید مبارک ۱۴۴۶</div>
 
     <div class="scene-3d">
         <div class="box-wrapper" id="giftBox" onclick="openGift()">
@@ -762,7 +805,7 @@
         </div>
     </div>
 
-    <p class="hint">🎁 Click the gift to open it</p>
+    <p class="hint">🎁 Click the gift — watch me open it for you!</p>
 </div>
 
 <!-- Letter Overlay -->
@@ -873,28 +916,60 @@ if (customMsg) document.getElementById('letterBody').textContent = decodeURIComp
 })();
 
 // ──────────────────────────────────────────────────────────────────
-// Gift Box Open
+// Gift Box Open - WITH CHARACTER ANIMATION
 // ──────────────────────────────────────────────────────────────────
 let opened = false;
 function openGift() {
     if (opened) return;
     opened = true;
 
-    // Animate lid off
-    document.getElementById('boxTop').classList.add('fly-off');
-
-    // Burst particles from center
+    const charCanvas = document.getElementById('char-canvas');
+    const bow = document.querySelector('.bow');
     const box = document.getElementById('giftBox');
-    const rect = box.getBoundingClientRect();
-    const cx = rect.left + rect.width / 2;
-    const cy = rect.top + rect.height / 2;
-    spawnBurst(cx, cy);
 
-    // Show letter after short delay
+    // STEP 1: Character walks to the gift box (1s)
+    charCanvas.classList.add('walking');
+
+    // STEP 2: After walking, character reaches up (0.3s delay)
+    setTimeout(() => {
+        charCanvas.classList.remove('walking');
+        charCanvas.classList.add('reaching');
+    }, 1000);
+
+    // STEP 3: Character pulls the ribbon/bow off (0.6s animation)
+    setTimeout(() => {
+        bow.classList.add('pulled');
+        
+        // Sparkles when ribbon is pulled!
+        const bowRect = bow.getBoundingClientRect();
+        const bowCx = bowRect.left + bowRect.width / 2;
+        const bowCy = bowRect.top + bowRect.height / 2;
+        spawnRibbonSparkles(bowCx, bowCy);
+    }, 1300);
+
+    // STEP 4: Lid flies off after ribbon is pulled
+    setTimeout(() => {
+        document.getElementById('boxTop').classList.add('fly-off');
+        
+        // Burst particles from center
+        const rect = box.getBoundingClientRect();
+        const cx = rect.left + rect.width / 2;
+        const cy = rect.top + rect.height / 2;
+        spawnBurst(cx, cy);
+    }, 2000);
+
+    // STEP 5: Show letter after lid is off
     setTimeout(() => {
         document.getElementById('letter-overlay').classList.add('visible');
         spawnConfetti();
-    }, 700);
+        
+        // Character walks back to original position
+        charCanvas.classList.remove('reaching');
+        setTimeout(() => {
+            charCanvas.style.transition = 'transform 0.8s ease-in-out';
+            charCanvas.style.transform = '';
+        }, 100);
+    }, 2700);
 }
 
 function spawnBurst(cx, cy) {
@@ -913,6 +988,23 @@ function spawnBurst(cx, cy) {
         `;
         document.body.appendChild(el);
         setTimeout(() => el.remove(), 1500);
+    }
+}
+
+function spawnRibbonSparkles(cx, cy) {
+    for (let i = 0; i < 12; i++) {
+        const el = document.createElement('div');
+        el.className = 'ribbon-sparkle';
+        const angle = (i / 12) * Math.PI * 2;
+        const dist = 40 + Math.random() * 60;
+        el.style.cssText = `
+            left:${cx}px; top:${cy}px;
+            --sx:${Math.cos(angle)*dist}px;
+            --sy:${Math.sin(angle)*dist}px;
+            animation-delay:${Math.random()*0.2}s;
+        `;
+        document.body.appendChild(el);
+        setTimeout(() => el.remove(), 1000);
     }
 }
 
@@ -938,24 +1030,33 @@ function closeLetter() {
     // Hide letter overlay
     document.getElementById('letter-overlay').classList.remove('visible');
 
-    // After overlay fades out, reset the box so it can be opened again
+    // After overlay fades out, reset everything
     setTimeout(() => {
         const top = document.getElementById('boxTop');
         const box = document.getElementById('giftBox');
+        const bow = document.querySelector('.bow');
+        const charCanvas = document.getElementById('char-canvas');
 
-        // Temporarily disable transition so reset is instant, then re-enable
+        // Reset lid
         top.style.transition = 'none';
         top.classList.remove('fly-off');
         box.classList.remove('opened');
 
-        // Force reflow so the transition-none takes effect before we restore it
+        // Reset bow
+        bow.classList.remove('pulled');
+
+        // Reset character position
+        charCanvas.classList.remove('walking', 'reaching');
+        charCanvas.style.transform = '';
+
+        // Force reflow
         void top.offsetHeight;
         top.style.transition = '';
 
-        // Re-enable clicking and hover animation
+        // Re-enable clicking
         box.style.pointerEvents = '';
         opened = false;
-    }, 450); // wait for overlay fade (0.4s) to finish first
+    }, 450);
 }
 
 // ──────────────────────────────────────────────────────────────────
@@ -1191,11 +1292,12 @@ function closeLetter() {
         lArm.rotation.z = -0.15;
         group.add(lArm);
 
-        // Right Arm (raised for waving)
+        // Right Arm (will animate when reaching)
         const rArm = new THREE.Mesh(new THREE.BoxGeometry(0.22,0.6,0.3), green);
         rArm.position.set(0.41, 0.25, 0);
         rArm.rotation.z = 0.8;
         group.add(rArm);
+        group.userData.rightArm = rArm; // Store reference for animation
 
         // Hands
         const lHand = new THREE.Mesh(new THREE.BoxGeometry(0.2,0.2,0.25), skin);
@@ -1204,6 +1306,7 @@ function closeLetter() {
         const rHand = new THREE.Mesh(new THREE.BoxGeometry(0.2,0.2,0.25), skin);
         rHand.position.set(0.55, 0.55, 0);
         group.add(rHand);
+        group.userData.rightHand = rHand; // Store reference
 
         // Legs
         [-0.15, 0.15].forEach((x,i) => {
@@ -1267,12 +1370,26 @@ function closeLetter() {
         requestAnimationFrame(animate);
 
         const t = (Date.now() - clock.start) * 0.001;
+        const isReaching = canvas.classList.contains('reaching');
 
         if (character) {
-            // Gentle breathing bob
-            character.position.y += Math.sin(t * 1.8) * 0.0008;
-            // Subtle look-around (centered on forward-facing angle)
-            character.rotation.y = (Math.PI + 0.3) + Math.sin(t * 0.5) * 0.12;
+            // Gentle breathing bob (unless reaching)
+            if (!isReaching) {
+                character.position.y += Math.sin(t * 1.8) * 0.0008;
+                character.rotation.y = (Math.PI + 0.3) + Math.sin(t * 0.5) * 0.12;
+            }
+
+            // Animate arm reaching up when pulling ribbon
+            if (character.userData.rightArm && character.userData.rightHand) {
+                const targetRotation = isReaching ? 1.8 : 0.8; // Reach higher
+                const targetArmY = isReaching ? 0.4 : 0.25;
+                const targetHandY = isReaching ? 0.75 : 0.55;
+
+                // Smooth interpolation
+                character.userData.rightArm.rotation.z += (targetRotation - character.userData.rightArm.rotation.z) * 0.1;
+                character.userData.rightArm.position.y += (targetArmY - character.userData.rightArm.position.y) * 0.1;
+                character.userData.rightHand.position.y += (targetHandY - character.userData.rightHand.position.y) * 0.1;
+            }
         }
 
         rimLight.intensity = 0.6 + 0.2 * Math.sin(t * 1.2);
