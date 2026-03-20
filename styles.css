@@ -486,56 +486,236 @@ body::before {
     100% { transform: translate(var(--px), var(--py)) scale(0) rotate(360deg); opacity: 0; }
 }
 
-/* ── RESPONSIVE ── */
+/* ══════════════════════════════════════════════
+   MOBILE-FIRST RESPONSIVE DESIGN
+   ══════════════════════════════════════════════ */
+
+/* Disable tap highlight on iOS/Android */
+* { -webkit-tap-highlight-color: transparent; }
+
+/* iOS safe area support */
+body {
+    padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+}
+
+/* Make card overlay scrollable on short screens */
+#card-overlay {
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 20px 0;
+}
+
+/* Ensure envelope has minimum touch target (44px per Apple HIG) */
+.envelope-seal { min-width: 44px; min-height: 44px; }
+.envelope-container { -webkit-user-select: none; user-select: none; touch-action: manipulation; }
+
+/* ── Tablet (≤768px) ── */
 @media (max-width: 768px) {
     .moon { top: 16px; right: 16px; width: 55px; height: 55px; }
     .moon::before { width: 55px; height: 55px; }
     .moon::after { top: -6px; right: -6px; width: 50px; height: 50px; }
-    .lantern-left { left: 20px; } .lantern-right { right: 20px; }
+    .lantern-left { left: 20px; }
+    .lantern-right { right: 20px; }
     .lantern svg { width: 28px; height: 70px; }
-    .eid-title { font-size: 1.2rem; margin-bottom: 4px; }
+    .eid-title { font-size: 1.3rem; margin-bottom: 6px; }
     .eid-sub { font-size: 1rem; margin-bottom: 18px; }
-    .hint { font-size: 0.8rem; margin-top: 14px; }
-    .envelope-container { width: 240px; height: 170px; }
-    .envelope-seal { width: 64px; height: 64px; }
+    .hint { font-size: 0.82rem; margin-top: 14px; }
+    .envelope-container { width: 250px; height: 178px; }
+    .envelope-seal { width: 68px; height: 68px; }
     .seal-text { font-size: 0.65rem; }
+    .eid-card { padding: 36px 28px 32px; }
 }
 
+/* ── Large phones / phablets (≤500px) ── */
 @media (max-width: 500px) {
     body { perspective: 900px; }
     .lantern { display: none; }
-    .moon { top: 12px; right: 12px; width: 46px; height: 46px; }
-    .moon::before { width: 46px; height: 46px; }
-    .moon::after { top: -5px; right: -5px; width: 42px; height: 42px; }
-    .eid-title { font-size: 1rem; letter-spacing: 0.08em; }
-    .eid-sub { font-size: 0.85rem; margin-bottom: 14px; }
-    .hint { font-size: 0.75rem; margin-top: 10px; }
-    .envelope-container { width: 200px; height: 145px; }
-    .envelope-seal { width: 56px; height: 56px; }
-    .seal-text { font-size: 0.58rem; }
-    .seal-icon { font-size: 0.9rem; }
-    #char-canvas { width: 120px !important; height: 200px !important; }
-    .from-board { bottom: 44px; left: 6px; transform: rotate(-3deg); }
-    .board-sign { padding: 5px 8px; font-size: 0.6rem; }
-    .board-sign .board-name { font-size: 0.65rem; }
-    .board-post { height: 22px; }
-    .eid-card { width: min(380px, 94vw); padding: 28px 20px 24px; }
-    .card-arabic { font-size: 1.6rem; }
-    .card-urdu { font-size: 1.2rem; }
-    .card-english { font-size: 1rem; }
-    .card-body { font-size: 0.88rem; }
-    .corner-ornament { width: 28px; height: 28px; }
+    .moon { top: 12px; right: 12px; width: 42px; height: 42px; }
+    .moon::before { width: 42px; height: 42px; box-shadow: 0 0 20px 10px rgba(212,160,23,0.3), 0 0 40px 20px rgba(212,160,23,0.1); }
+    .moon::after { top: -5px; right: -5px; width: 38px; height: 38px; }
+
+    .eid-title { font-size: 1.05rem; letter-spacing: 0.08em; margin-bottom: 4px; }
+    .eid-sub { font-size: 0.9rem; margin-bottom: 16px; }
+    .hint { font-size: 0.78rem; margin-top: 12px; }
+
+    /* Envelope - sized for thumb-friendly tapping */
+    .envelope-container { width: 220px; height: 158px; }
+    .envelope-seal { width: 60px; height: 60px; }
+    .seal-text { font-size: 0.6rem; }
+    .seal-icon { font-size: 0.95rem; }
+    .envelope-card-peek.slide-out { transform: translateX(-50%) translateY(-180px) scale(1.03); }
+
+    /* Character + board - smaller on mobile */
+    #char-canvas { width: 110px !important; height: 180px !important; }
+    .from-board { bottom: 38px; left: 4px; transform: rotate(-3deg); }
+    .board-sign { padding: 4px 8px; font-size: 0.58rem; }
+    .board-sign .board-name { font-size: 0.62rem; }
+    .board-post { height: 20px; width: 4px; }
+    .from-board.waving { transform: rotate(-3deg) translateY(-60px); }
+    @keyframes boardWave {
+        0%, 100% { transform: rotate(-3deg) translateY(-60px); }
+        25% { transform: rotate(6deg) translateY(-60px); }
+        50% { transform: rotate(-8deg) translateY(-60px); }
+        75% { transform: rotate(6deg) translateY(-60px); }
+    }
+
+    /* Eid Card overlay — mobile optimized */
+    #card-overlay { padding: 16px 0; align-items: flex-start; padding-top: 40px; }
+    .eid-card {
+        width: min(380px, 92vw);
+        padding: 28px 18px 24px;
+        border-radius: 14px;
+        margin: auto;
+    }
+    .eid-card::before { inset: 7px; }
+    .card-motif { font-size: 2.4rem; margin-bottom: 4px; }
+    .card-arabic { font-size: 1.7rem; margin: 6px 0; line-height: 1.5; }
+    .card-urdu { font-size: 1.15rem; margin: 2px 0 6px; line-height: 1.7; }
+    .card-english { font-size: 0.95rem; letter-spacing: 0.1em; margin: 2px 0 12px; }
+    .card-divider { margin: 10px 0; gap: 10px; }
+    .card-divider span { font-size: 0.85rem; }
+    .card-to { font-size: 0.62rem; letter-spacing: 0.25em; }
+    .card-recipient { font-size: 1.1rem; margin-bottom: 12px; }
+    .card-body { font-size: 0.88rem; line-height: 1.8; margin: 8px 0; }
+    .card-sign-off { margin-top: 14px; padding-top: 12px; }
+    .card-blessing { font-size: 0.88rem; margin-bottom: 6px; }
+    .card-from { font-size: 0.82rem; }
+    .corner-ornament { width: 26px; height: 26px; }
+    .corner-tl { top: 10px; left: 10px; }
+    .corner-tr { top: 10px; right: 10px; }
+    .corner-bl { bottom: 10px; left: 10px; }
+    .corner-br { bottom: 10px; right: 10px; }
 }
 
+/* ── Standard phones (≤414px — iPhone Plus, Pixel, etc.) ── */
+@media (max-width: 414px) {
+    .eid-title { font-size: 0.95rem; letter-spacing: 0.06em; }
+    .eid-sub { font-size: 0.85rem; margin-bottom: 14px; }
+    .envelope-container { width: 210px; height: 150px; }
+    .envelope-seal { width: 56px; height: 56px; }
+    .seal-text { font-size: 0.55rem; }
+    .eid-card { width: min(360px, 93vw); padding: 24px 16px 22px; }
+    .card-arabic { font-size: 1.55rem; }
+    .card-urdu { font-size: 1.05rem; }
+    .card-english { font-size: 0.9rem; }
+    .card-body { font-size: 0.85rem; line-height: 1.75; }
+}
+
+/* ── Small phones (≤375px — iPhone SE, standard iPhones) ── */
+@media (max-width: 375px) {
+    .eid-title { font-size: 0.88rem; }
+    .eid-sub { font-size: 0.8rem; margin-bottom: 12px; }
+    .envelope-container { width: 195px; height: 140px; }
+    .envelope-seal { width: 52px; height: 52px; }
+    .seal-text { font-size: 0.52rem; }
+    .seal-icon { font-size: 0.85rem; }
+    #char-canvas { width: 95px !important; height: 160px !important; }
+    .from-board { bottom: 32px; left: 2px; }
+    .board-sign { padding: 3px 6px; font-size: 0.52rem; }
+    .board-sign .board-name { font-size: 0.58rem; }
+    .board-sign .board-label { font-size: 0.45rem; }
+    .board-post { height: 16px; width: 3px; }
+
+    #card-overlay { padding: 12px 0; padding-top: 30px; }
+    .eid-card { width: 94vw; padding: 22px 14px 20px; border-radius: 12px; }
+    .card-motif { font-size: 2rem; }
+    .card-arabic { font-size: 1.4rem; }
+    .card-urdu { font-size: 0.95rem; line-height: 1.6; }
+    .card-english { font-size: 0.82rem; margin: 2px 0 10px; }
+    .card-to { font-size: 0.58rem; }
+    .card-recipient { font-size: 1rem; margin-bottom: 10px; }
+    .card-body { font-size: 0.82rem; line-height: 1.7; margin: 6px 0; }
+    .card-blessing { font-size: 0.82rem; }
+    .card-from { font-size: 0.78rem; }
+    .corner-ornament { width: 22px; height: 22px; }
+    .corner-tl { top: 8px; left: 8px; }
+    .corner-tr { top: 8px; right: 8px; }
+    .corner-bl { bottom: 8px; left: 8px; }
+    .corner-br { bottom: 8px; right: 8px; }
+}
+
+/* ── Very small phones (≤360px — Galaxy S small, older devices) ── */
 @media (max-width: 360px) {
     .envelope-container { width: 180px; height: 130px; }
-    .envelope-seal { width: 50px; height: 50px; }
-    .seal-text { font-size: 0.52rem; }
-    .eid-card { width: min(340px, 96vw); padding: 24px 16px 20px; }
-    .card-arabic { font-size: 1.4rem; }
+    .envelope-seal { width: 48px; height: 48px; }
+    .seal-text { font-size: 0.48rem; }
+    .eid-card { width: 95vw; padding: 20px 12px 18px; }
+    .card-arabic { font-size: 1.3rem; }
+    .card-urdu { font-size: 0.88rem; }
+    .card-body { font-size: 0.8rem; }
 }
 
-/* Reduced motion */
+/* ── Tiny phones (≤320px — iPhone 5/SE gen1) ── */
+@media (max-width: 320px) {
+    .eid-title { font-size: 0.8rem; letter-spacing: 0.04em; }
+    .eid-sub { font-size: 0.72rem; margin-bottom: 10px; }
+    .envelope-container { width: 165px; height: 120px; }
+    .envelope-seal { width: 44px; height: 44px; }
+    .seal-text { font-size: 0.44rem; }
+    .seal-icon { font-size: 0.75rem; }
+    #char-canvas { width: 80px !important; height: 140px !important; }
+    .from-board { bottom: 26px; left: 0; }
+    .board-sign { padding: 3px 5px; font-size: 0.48rem; }
+    .board-sign .board-name { font-size: 0.52rem; }
+    .board-post { height: 14px; }
+    .hint { font-size: 0.68rem; margin-top: 8px; }
+
+    .eid-card { width: 96vw; padding: 18px 10px 16px; }
+    .card-motif { font-size: 1.6rem; }
+    .card-arabic { font-size: 1.15rem; }
+    .card-urdu { font-size: 0.8rem; }
+    .card-english { font-size: 0.75rem; letter-spacing: 0.06em; }
+    .card-body { font-size: 0.76rem; line-height: 1.65; }
+    .card-divider { margin: 8px 0; }
+    .card-recipient { font-size: 0.9rem; }
+    .card-blessing { font-size: 0.76rem; }
+    .card-from { font-size: 0.72rem; }
+    .corner-ornament { width: 18px; height: 18px; }
+}
+
+/* ── Short screens / landscape phones ── */
+@media (max-height: 700px) and (max-width: 500px) {
+    .eid-title { margin-bottom: 2px; }
+    .eid-sub { margin-bottom: 8px; font-size: 0.78rem; }
+    .envelope-container { width: 170px; height: 122px; }
+    .hint { margin-top: 6px; }
+    #card-overlay { padding-top: 10px; }
+    .eid-card { padding: 18px 14px 16px; }
+    .card-motif { font-size: 1.8rem; margin-bottom: 2px; }
+    .card-arabic { font-size: 1.3rem; margin: 4px 0; }
+    .card-urdu { font-size: 0.85rem; margin: 2px 0 4px; }
+    .card-english { margin: 2px 0 8px; }
+    .card-divider { margin: 6px 0; }
+    .card-body { margin: 4px 0; }
+    .card-sign-off { margin-top: 8px; padding-top: 8px; }
+    #char-canvas { height: 150px !important; }
+    .from-board { bottom: 28px; }
+}
+
+/* ── Landscape orientation on phones ── */
+@media (orientation: landscape) and (max-height: 500px) {
+    #scene { flex-direction: row; flex-wrap: wrap; justify-content: center; gap: 8px; }
+    .eid-title { font-size: 0.9rem; margin-bottom: 0; }
+    .eid-sub { font-size: 0.7rem; margin-bottom: 0; }
+    .envelope-container { width: 150px; height: 108px; }
+    .envelope-seal { width: 44px; height: 44px; }
+    .hint { font-size: 0.65rem; margin-top: 4px; }
+    #char-canvas { display: none !important; }
+    .from-board { display: none; }
+    #card-overlay { padding: 8px 0; }
+    .eid-card { padding: 16px 12px 14px; }
+    .card-motif { font-size: 1.5rem; margin-bottom: 0; }
+    .card-arabic { font-size: 1.1rem; margin: 2px 0; }
+    .card-urdu { font-size: 0.78rem; margin: 0; }
+    .card-english { font-size: 0.72rem; margin: 0 0 6px; }
+    .card-body { font-size: 0.75rem; line-height: 1.6; margin: 4px 0; }
+    .card-sign-off { margin-top: 6px; padding-top: 6px; }
+}
+
+/* ── Reduced motion ── */
 @media (prefers-reduced-motion: reduce) {
-    *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+    }
 }

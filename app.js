@@ -15,6 +15,7 @@ if (customMsg) document.getElementById('cardBody').textContent = decodeURICompon
 (function initStars() {
     const canvas = document.getElementById('stars-canvas');
     const ctx = canvas.getContext('2d');
+    const isMob = window.innerWidth <= 500;
     let W, H, stars = [];
 
     function resize() {
@@ -51,9 +52,10 @@ if (customMsg) document.getElementById('cardBody').textContent = decodeURICompon
     }
 
     resize();
-    makeStars(180);
+    const starCount = isMob ? 90 : 180;
+    makeStars(starCount);
     draw();
-    window.addEventListener('resize', () => { resize(); makeStars(180); });
+    window.addEventListener('resize', () => { resize(); makeStars(starCount); });
 })();
 
 // ──────────────────────────────────────────────────────────────────
@@ -61,7 +63,8 @@ if (customMsg) document.getElementById('cardBody').textContent = decodeURICompon
 // ──────────────────────────────────────────────────────────────────
 (function spawnParticles() {
     const colors = ['#d4a017','#f5c842','#fde68a','#059669','#10b981'];
-    for (let i = 0; i < 18; i++) {
+    const particleCount = window.innerWidth <= 500 ? 10 : 18;
+    for (let i = 0; i < particleCount; i++) {
         const el = document.createElement('div');
         el.className = 'particle';
         const size = Math.random() * 5 + 3;
@@ -213,10 +216,11 @@ function spawnSealParticles(seal) {
     const cx = rect.left + rect.width / 2;
     const cy = rect.top + rect.height / 2;
     const colors = ['#c41e3a', '#e63946', '#d4a017', '#f5c842', '#8b1a2e'];
-    for (let i = 0; i < 16; i++) {
+    const count = window.innerWidth <= 500 ? 10 : 16;
+    for (let i = 0; i < count; i++) {
         const el = document.createElement('div');
         el.className = 'seal-particle';
-        const angle = (i / 16) * Math.PI * 2;
+        const angle = (i / count) * Math.PI * 2;
         const dist = 40 + Math.random() * 80;
         const size = 4 + Math.random() * 6;
         el.style.cssText = `
@@ -234,8 +238,10 @@ function spawnSealParticles(seal) {
 
 function spawnConfetti() {
     const card = document.querySelector('.eid-card');
+    const isMobile = window.innerWidth <= 500;
     const colors = ['#d4a017','#f5c842','#34d399','#059669','#fde68a','#ffffff','#c41e3a'];
-    for (let i = 0; i < 30; i++) {
+    const confettiCount = isMobile ? 18 : 30;
+    for (let i = 0; i < confettiCount; i++) {
         const el = document.createElement('div');
         el.className = 'confetti-piece';
         const color = colors[i % colors.length];
@@ -280,8 +286,16 @@ function closeCard() {
 (function init3DCharacter() {
     const canvas = document.getElementById('char-canvas');
     const isMobile = window.innerWidth <= 500;
-    const W = isMobile ? Math.min(120, window.innerWidth * 0.32) : Math.min(320, window.innerWidth * 0.35);
-    const H = isMobile ? Math.min(200, window.innerHeight * 0.38) : Math.min(400, window.innerHeight * 0.55);
+    const isTiny = window.innerWidth <= 320;
+    const isSmall = window.innerWidth <= 375;
+    const W = isTiny ? Math.min(80, window.innerWidth * 0.25) :
+              isSmall ? Math.min(95, window.innerWidth * 0.28) :
+              isMobile ? Math.min(110, window.innerWidth * 0.30) :
+              Math.min(320, window.innerWidth * 0.35);
+    const H = isTiny ? Math.min(140, window.innerHeight * 0.28) :
+              isSmall ? Math.min(160, window.innerHeight * 0.32) :
+              isMobile ? Math.min(180, window.innerHeight * 0.35) :
+              Math.min(400, window.innerHeight * 0.55);
     canvas.width  = W;
     canvas.height = H;
     canvas.style.width  = W + 'px';
@@ -603,8 +617,16 @@ function closeCard() {
 
     window.addEventListener('resize', () => {
         const mob = window.innerWidth <= 500;
-        const nW = mob ? Math.min(120, window.innerWidth * 0.32) : Math.min(320, window.innerWidth * 0.35);
-        const nH = mob ? Math.min(200, window.innerHeight * 0.38) : Math.min(400, window.innerHeight * 0.55);
+        const tiny = window.innerWidth <= 320;
+        const small = window.innerWidth <= 375;
+        const nW = tiny ? Math.min(80, window.innerWidth * 0.25) :
+                  small ? Math.min(95, window.innerWidth * 0.28) :
+                  mob ? Math.min(110, window.innerWidth * 0.30) :
+                  Math.min(320, window.innerWidth * 0.35);
+        const nH = tiny ? Math.min(140, window.innerHeight * 0.28) :
+                  small ? Math.min(160, window.innerHeight * 0.32) :
+                  mob ? Math.min(180, window.innerHeight * 0.35) :
+                  Math.min(400, window.innerHeight * 0.55);
         canvas.width  = nW;
         canvas.height = nH;
         canvas.style.width  = nW + 'px';
