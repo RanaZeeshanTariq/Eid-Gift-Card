@@ -465,7 +465,7 @@ body::before {
 /* Elegant recipient tag on envelope */
 .envelope-recipient {
     position: absolute;
-    bottom: 12px;
+    top: 58%;
     left: 50%;
     transform: translateX(-50%);
     z-index: 3;
