@@ -496,9 +496,10 @@ body::before {
     font-family: 'Cinzel Decorative', serif;
     font-size: 0.72rem;
     font-weight: 700;
-    color: #4a3520;
+    color: var(--gold-glow);
     letter-spacing: 0.06em;
     text-shadow: 0 1px 1px rgba(255, 255, 255, 0.5);
+    filter: drop-shadow(0 1px 4px rgba(212, 160, 23, 0.3));
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
